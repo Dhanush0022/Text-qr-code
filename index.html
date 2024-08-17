@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <!-- Direct link to qrcode.min.js -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+        }
+        #container {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #fff;
+            border-radius: 10px;
+            background-color: #fff;
+            color: #000;
+        }
+        input, button, select {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #000;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #444;
+        }
+        #qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #qrcode {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+        }
+        #download-button {
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #000;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #download-button:hover {
+            background-color: #444;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>QR Code Generator</h1>
+        <input type="text" id="text" placeholder="Enter text or URL">
+        <div>
+            <label for="size">Size:</label>
+            <select id="size">
+                <option value="128">128x128</option>
+                <option value="256">256x256</option>
+                <option value="512">512x512</option>
+            </select>
+        </div>
+        <button onclick="generateQRCode()">Generate QR Code</button>
+        <div id="qr-container">
+            <div id="qrcode"></div>
+            <button id="download-button" style="display: none;" onclick="downloadQRCode()">Download QR Code</button>
+        </div>
+    </div>
+
+    <script>
+        function generateQRCode() {
+            var text = document.getElementById("text").value;
+            var size = document.getElementById("size").value;
+            var qrcodeContainer = document.getElementById("qrcode");
+            qrcodeContainer.innerHTML = "";
+            console.log("Generating QR Code for:", text, "with size:", size);
+            var qrcode = new QRCode(qrcodeContainer, {
+                text: text,
+                width: parseInt(size),
+                height: parseInt(size),
+                colorDark: "#000000",
+                colorLight: "#ffffff"
+            });
+            console.log("QR Code generated.");
+
+            // Show the download button
+            document.getElementById("download-button").style.display = "block";
+        }
+
+        function downloadQRCode() {
+            var qrcodeContainer = document.getElementById("qrcode");
+            var qrCanvas = qrcodeContainer.querySelector("canvas");
+            if (qrCanvas) {
+                // Create a temporary link element
+                var link = document.createElement('a');
+                link.href = qrCanvas.toDataURL("image/jpeg"); // Convert canvas to JPEG
+                link.download = "qrcode.jpg"; // Set the file name
+                document.body.appendChild(link); // Append link to the body
+                link.click(); // Trigger the download
+                document.body.removeChild(link); // Remove link from the document
+            } else {
+                console.log("No QR code canvas found.");
+            }
+        }
+    </script>
+</body>
+</html>
